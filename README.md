@@ -5,6 +5,7 @@
 First, have a look at [this simple example](https://github.com/caprover/one-click-apps/blob/master/public/v4/apps/privatebin.yml). Now, read on for more details:
 
 
+
 - Find/create a docker-compose file for the app you're interested in.
 - Add `captainVersion: 4` to the very top of the yaml file.
 - Add this section to the end of the yaml file:
