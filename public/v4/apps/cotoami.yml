@@ -1,0 +1,72 @@
+captainVersion: 4
+services:
+    $$cap_appname:
+        image: cotoami/cotoami:$$cap_umami_version
+        restart: always
+        environment:
+            SECRET_KEY_BASE: $$cap_cotoami_secret_key_base
+            COTOAMI_URL_SCHEME: https
+            COTOAMI_URL_HOST: srv-captain--$$cap_appname
+            COTOAMI_URL_PORT: "4000"
+            COTOAMI_REDIS_HOST: srv-captain--$$cap_appname-redis
+            COTOAMI_REPO_USER: $$cap_cotoami_psql_user
+            COTOAMI_REPO_PASSWORD: $$cap_cotoami_psql_pass
+            COTOAMI_REPO_DATABASE: $$cap_cotoami_psql_db
+            COTOAMI_REPO_HOST: $$cap_cotoami_psql_host
+            COTOAMI_NEO4J_HOST: srv-captain--$$cap_appname-neo4j
+            COTOAMI_SMTP_SERVER: maildev
+            COTOAMI_SMTP_PORT: "25"
+            COTOAMI_EMAIL_FROM: no-reply@cotoa.me
+            COTOAMI_ADDITIONAL_VALID_ORIGINS: chrome-extension://
+        depends_on:
+            - $$cap_appname-postgres
+        caproverExtra:
+            containerHttpPort: '4000'
+            notExposeAsWebApp: 'true'
+    # PostgreSQL
+    $$cap_appname-redis:
+        image: redis:alpine
+    $$cap_appname-neo4j:
+        image: neo4j:3.2.2
+        environment:
+        NEO4J_AUTH: none
+        volumes:
+        - $$cap_appname-neo4j-data:/data 
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+caproverOneClickApp:
+    variables:
+        - id: $$cap_cotoami_version
+          label: Caprover Cotoami Version
+          defaultValue: 'latest'
+          description: Sample Text
+        - id: $$cap_cotoami_psql_user
+          label: psql username
+          description: 'Username for PSQL'
+          defaultValue: 'postgres'
+        - id: $$cap_cotoami_psql_pass
+          label: psql pass
+          description: 'Pass for PSQL'
+          defaultValue: 'postgres'
+        - id: $$cap_cotoami_psql_db
+          label: psql database
+          description: 'Database for PSQL'
+          defaultValue: 'cotoami'
+        - id: $$cap_cotoami_psql_host
+          label: psql host
+          description: 'Host for PSQL'
+          defaultValue: 'postgres'
+        - id: $$cap_cotoami_secret_key_base
+          label: secret key base
+          description: 'Secret Key Base'
+          defaultValue: $$cap_gen_random_hex(48)
+    instructions:
+        start: >-
+            Cotoami
+        end: >-
+            Aaaand you're done! 🔥 
+    displayName: cotoami
+    isOfficial: false
+    description: ITS COTOAMI
+    documentation: Official docs are [here](https://umami.is/docs/getting-started)
